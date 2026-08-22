@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8">
@@ -12,10 +12,9 @@
 </script>
 <style>
   .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
-  .fade-in{animation:fadeIn 0.4s ease forwards;}
+  .fade-in{animation:fadeIn 0.35s ease forwards;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   .tx-item{animation:fadeIn 0.3s ease forwards;}
-  .bar-fill{transition:height 0.8s cubic-bezier(.4,0,.2,1);}
   ::-webkit-scrollbar{width:4px;}
   ::-webkit-scrollbar-thumb{background:rgba(149,142,160,.2);border-radius:4px;}
   .delete-btn{opacity:0;transition:opacity 0.2s;}
@@ -31,18 +30,17 @@
     <p class="font-label-sm text-label-sm text-on-surface-variant">Wealth Management</p>
   </div>
   <div class="flex flex-col gap-2">
-    <a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg" href="dashboard.html">
+    <a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-medium" href="dashboard.html">
       <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">home</span>
       <span class="font-label-md text-label-md">Home</span>
     </a>
-
     <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/30 rounded-lg transition-all" href="#" id="logout-link">
       <span class="material-symbols-outlined">logout</span>
       <span class="font-label-md text-label-md">Cerrar Sesión</span>
     </a>
   </div>
   <div class="mt-auto">
-    <button onclick="openModal()" class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+    <button onclick="openModal()" class="w-full bg-primary hover:bg-primary-fixed text-on-primary font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 font-semibold transition-all shadow-md">
       <span class="material-symbols-outlined">add</span>
       Nueva Transacción
     </button>
@@ -53,8 +51,8 @@
 <header class="md:hidden bg-surface/70 backdrop-blur-md text-primary fixed top-0 w-full z-50 border-b border-outline-variant/20 flex justify-between items-center px-6 h-16">
   <div class="font-headline-md text-headline-md font-bold text-primary">Aura Finance</div>
   <div class="flex items-center gap-3">
-    <button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
-    <button id="mobile-user-btn" class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">account_circle</span></button>
+    <button onclick="openModal()" class="text-primary hover:opacity-80 transition-opacity"><span class="material-symbols-outlined text-2xl">add_circle</span></button>
+    <button onclick="logout()" class="text-on-surface-variant hover:text-error transition-colors" title="Cerrar Sesión"><span class="material-symbols-outlined">logout</span></button>
   </div>
 </header>
 
@@ -66,7 +64,7 @@
     <div class="fade-in flex items-center justify-between">
       <div>
         <p class="font-label-md text-label-md text-on-surface-variant">Bienvenido de nuevo,</p>
-        <h2 class="font-headline-md text-headline-md text-on-surface" id="user-name">Usuario</h2>
+        <h2 class="font-headline-md text-headline-md text-on-surface font-semibold" id="user-name">Usuario</h2>
       </div>
       <div class="hidden md:flex items-center gap-2 bg-surface-container rounded-full px-4 py-2 border border-outline-variant/20">
         <span class="material-symbols-outlined text-on-surface-variant text-lg">calendar_today</span>
@@ -110,12 +108,10 @@
       </div>
     </section>
 
-
-
     <!-- Recent Transactions -->
-    <section id="transactions">
+    <section id="transactions" class="fade-in">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="font-headline-md text-headline-md text-on-surface">Transacciones</h3>
+        <h3 class="font-headline-md text-headline-md text-on-surface font-semibold">Transacciones</h3>
         <div class="flex gap-2">
           <select id="filter-type" class="bg-surface-container border border-outline-variant/30 text-on-surface-variant font-label-sm text-label-sm rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
             <option value="all">Todas</option>
@@ -133,22 +129,9 @@
 </main>
 
 <!-- FAB Mobile -->
-<button onclick="openModal()" class="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40">
+<button onclick="openModal()" class="md:hidden fixed bottom-8 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40">
   <span class="material-symbols-outlined text-2xl">add</span>
 </button>
-
-<!-- MOBILE BottomNav -->
-<nav class="md:hidden bg-surface/80 backdrop-blur-xl fixed bottom-0 w-full z-50 flex justify-around items-center border-t border-outline-variant/20 px-2 py-2">
-  <a class="bg-primary text-on-primary rounded-full px-4 py-2 flex items-center gap-2 font-label-sm text-label-sm" href="dashboard.html">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">home</span><span>Home</span>
-  </a>
-  <a onclick="openModal()" class="text-on-surface-variant px-4 py-2 font-label-sm text-label-sm flex flex-col items-center hover:text-primary" href="#">
-    <span class="material-symbols-outlined">add_circle</span>
-  </a>
-  <a id="logout-mobile" class="text-on-surface-variant px-4 py-2 font-label-sm text-label-sm flex flex-col items-center hover:text-primary" href="#">
-    <span class="material-symbols-outlined">logout</span>
-  </a>
-</nav>
 
 <!-- MODAL Nueva Transacción -->
 <div id="modal-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -239,11 +222,12 @@ let currentType='gasto';
 let selectedCat=null;
 let transactions=JSON.parse(localStorage.getItem('aura_transactions')||'[]');
 
-// Auth guard
-const user=JSON.parse(sessionStorage.getItem('aura_user')||'null');
-if(!user){window.location.href='index.html';}
-else{
-  document.getElementById('user-name').textContent=user.name||'Usuario';
+// Auth guard - checks sessionStorage first, then fallback to localStorage
+const user = JSON.parse(sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user') || 'null');
+if(!user){
+  window.location.replace('index.html');
+} else {
+  document.getElementById('user-name').textContent = user.name || 'Usuario';
 }
 
 // Date
@@ -252,9 +236,13 @@ document.getElementById('current-date').textContent=now.toLocaleDateString('es-E
 document.getElementById('tx-date').valueAsDate=now;
 
 // Logout
-function logout(){sessionStorage.removeItem('aura_user');window.location.href='index.html';}
-document.getElementById('logout-link').addEventListener('click',function(e){e.preventDefault();logout();});
-document.getElementById('logout-mobile').addEventListener('click',function(e){e.preventDefault();logout();});
+function logout(){
+  sessionStorage.removeItem('aura_user');
+  localStorage.removeItem('aura_active_user');
+  window.location.replace('index.html');
+}
+const logoutBtn = document.getElementById('logout-link');
+if(logoutBtn) logoutBtn.addEventListener('click', function(e){ e.preventDefault(); logout(); });
 
 // Format currency
 function fmt(n){return'$'+Math.abs(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -271,43 +259,7 @@ function renderDashboard(){
   document.getElementById('total-balance').className='font-display-lg text-display-lg '+(balance>=0?'text-primary':'text-error');
   document.getElementById('total-income').textContent='+'+fmt(income);
   document.getElementById('total-expenses').textContent='-'+fmt(expenses);
-  renderChart(monthTx);
   renderTransactions();
-}
-
-// Render chart
-function renderChart(txs){
-  const cats={};
-  txs.filter(t=>t.type==='gasto').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
-  const container=document.getElementById('chart-container');
-  const legend=document.getElementById('chart-legend');
-  if(!Object.keys(cats).length){
-    container.innerHTML='<p class="text-on-surface-variant font-label-sm text-label-sm m-auto">Sin gastos este mes</p>';
-    legend.innerHTML='';return;
-  }
-  const max=Math.max(...Object.values(cats));
-  container.innerHTML='';legend.innerHTML='';
-  Object.entries(cats).sort((a,b)=>b[1]-a[1]).forEach(([cat,amount])=>{
-    const pct=Math.round((amount/max)*100);
-    const color=CAT_COLORS[cat]||'#cbc3d7';
-    const catInfo=CATS.find(c=>c.id===cat)||{label:cat,icon:'more_horiz'};
-    const bar=document.createElement('div');
-    bar.className='flex flex-col items-center gap-2 flex-1 max-w-[60px]';
-    bar.innerHTML=`<span class="font-label-sm text-label-sm text-on-surface-variant">${fmt(amount)}</span>
-    <div class="w-full rounded-t-lg bar-fill" style="height:0;background:${color};min-height:4px;" data-pct="${pct}"></div>
-    <span class="material-symbols-outlined text-lg" style="color:${color}">${catInfo.icon}</span>
-    <span class="font-label-sm text-label-sm text-on-surface-variant text-center leading-tight">${catInfo.label}</span>`;
-    container.appendChild(bar);
-    const li=document.createElement('div');
-    li.className='flex items-center gap-2';
-    li.innerHTML=`<div class="w-3 h-3 rounded-full" style="background:${color}"></div><span class="font-label-sm text-label-sm text-on-surface-variant">${catInfo.label}</span>`;
-    legend.appendChild(li);
-  });
-  setTimeout(()=>{
-    document.querySelectorAll('.bar-fill').forEach(b=>{
-      b.style.height=(b.dataset.pct/100*120)+'px';
-    });
-  },100);
 }
 
 // Render transaction list
