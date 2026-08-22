@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Finance</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config={darkMode:"class",theme:{extend:{colors:{"error-container":"#93000a","error":"#ffb4ab","inverse-primary":"#6d3bd7","on-primary":"#3c0091","surface-variant":"#353534","on-tertiary-fixed-variant":"#891933","on-tertiary":"#67001f","tertiary":"#ffb2b9","secondary":"#4edea3","on-background":"#e5e2e1","surface":"#131313","secondary-fixed-dim":"#4edea3","surface-container-highest":"#353534","primary-container":"#a078ff","on-surface":"#e5e2e1","on-secondary-fixed":"#002113","primary-fixed":"#e9ddff","outline-variant":"#494454","surface-container-lowest":"#0e0e0e","on-primary-fixed-variant":"#5516be","inverse-surface":"#e5e2e1","tertiary-fixed-dim":"#ffb2b9","primary-fixed-dim":"#d0bcff","surface-bright":"#3a3939","surface-tint":"#d0bcff","on-surface-variant":"#cbc3d7","background":"#131313","on-tertiary-fixed":"#400010","tertiary-container":"#ea6479","on-error":"#690005","primary":"#d0bcff","on-secondary":"#003824","secondary-container":"#00a572","secondary-fixed":"#6ffbbe","surface-container-low":"#1c1b1b","on-primary-fixed":"#23005c","on-primary-container":"#340080","on-error-container":"#ffdad6","surface-container":"#201f1f","on-secondary-fixed-variant":"#005236","tertiary-fixed":"#ffdadc","outline":"#958ea0","inverse-on-surface":"#313030","on-secondary-container":"#00311f","surface-dim":"#131313","surface-container-high":"#2a2a2a","on-tertiary-container":"#5b001a"},borderRadius:{"DEFAULT":"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-padding":"24px","element-gap":"16px",unit:"4px","max-width":"1200px","section-gap":"40px"},fontFamily:{"label-sm":["Inter"],"headline-md":["Inter"],"headline-lg":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"display-lg":["Inter"],"label-md":["Inter"],"headline-lg-mobile":["Inter"]},fontSize:{"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.05em",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"600"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"display-lg":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],"label-md":["14px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"500"}],"headline-lg-mobile":["24px",{lineHeight:"32px",fontWeight:"600"}]}}}}
+</script>
+<style>
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+  input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{-webkit-box-shadow:0 0 0 30px #1c1b1b inset !important;-webkit-text-fill-color:#e5e2e1 !important;transition:background-color 5000s ease-in-out 0s;}
+  .fade-in{animation:fadeIn 0.25s ease forwards;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-thumb{background:rgba(149,142,160,.2);border-radius:4px;}
+  .delete-btn{opacity:0;transition:opacity 0.2s;}
+  .tx-row:hover .delete-btn{opacity:1;}
+  .active-tab{background:rgba(53,53,52,1);color:#e5e2e1;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .inactive-tab{color:#cbc3d7;}
+  .cat-btn{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border-radius:12px;border:1px solid transparent;background:#2a2a2a;color:#cbc3d7;transition:all .2s;cursor:pointer;}
+  .cat-btn:hover{border-color:rgba(73,68,84,.3);color:#e5e2e1;}
+  .cat-btn.selected{background:rgba(160,120,255,.15);border-color:#d0bcff;color:#d0bcff;}
+  .cat-icon{width:40px;height:40px;border-radius:50%;background:rgba(53,53,52,.6);display:flex;align-items:center;justify-content:center;}
+  .cat-btn.selected .cat-icon{background:rgba(208,188,255,.2);}
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md antialiased overflow-x-hidden">
+
+<!-- ========================================== -->
+<!-- 1. AUTH VIEW                               -->
+<!-- ========================================== -->
+<div id="auth-view" class="min-h-screen w-full flex flex-col items-center justify-center relative py-10 px-4">
+  <div class="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-container/20 blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-[-15%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary-container/10 blur-[100px] pointer-events-none"></div>
+  <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image:radial-gradient(#e5e2e1 1px,transparent 1px);background-size:32px 32px;"></div>
+
+  <div class="fade-in z-10 w-full max-w-[440px] mx-auto px-6 py-8 sm:p-8 bg-surface-container/80 backdrop-blur-2xl border border-outline-variant/30 sm:rounded-[24px] shadow-2xl flex flex-col gap-6 relative">
+    <header class="flex flex-col items-center text-center gap-2">
+      <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-1 border border-primary/20">
+        <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings:'FILL' 1;">eco</span>
+      </div>
+      <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-bold" id="card-title">Iniciar Sesión</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant" id="card-desc">Gestiona tus finanzas y gastos con total precisión.</p>
+    </header>
+
+    <div class="flex bg-surface-container-high p-1 rounded-xl border border-outline-variant/20">
+      <button id="tab-login" type="button" onclick="setAuthMode('login')" class="flex-1 py-2 rounded-lg font-label-md text-label-md transition-all text-center bg-surface-variant text-on-surface shadow-sm cursor-pointer">
+        Iniciar Sesión
+      </button>
+      <button id="tab-register" type="button" onclick="setAuthMode('register')" class="flex-1 py-2 rounded-lg font-label-md text-label-md transition-all text-center text-on-surface-variant hover:text-on-surface cursor-pointer">
+        Crear Cuenta
+      </button>
+    </div>
+
+    <!-- LOGIN FORM CONTAINER (NO PAGE RELOAD) -->
+    <div id="login-form" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="font-label-md text-label-md text-on-surface">Correo Electrónico</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">mail</span></div>
+          <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-all" id="login-email" placeholder="tu@correo.com" type="email" value="demo@aura.com"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <div class="flex justify-between items-center">
+          <label class="font-label-md text-label-md text-on-surface">Contraseña</label>
+          <span class="font-label-sm text-label-sm text-primary/80">Demo: demo1234</span>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">lock</span></div>
+          <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-10 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-all" id="login-password" placeholder="••••••••" value="demo1234" type="password"/>
+        </div>
+      </div>
+      <button onclick="doLogin()" type="button" class="w-full bg-primary hover:bg-primary-fixed text-on-primary font-label-md text-label-md py-3.5 rounded-lg mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(208,188,255,0.3)] font-semibold cursor-pointer">
+        <span>Ingresar al Dashboard</span>
+        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+      </button>
+    </div>
+
+    <!-- REGISTER FORM CONTAINER -->
+    <div id="register-form" class="hidden flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="font-label-md text-label-md text-on-surface">Nombre Completo</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">person</span></div>
+          <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-all" id="reg-name" placeholder="Ej. Agustín" type="text"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="font-label-md text-label-md text-on-surface">Correo Electrónico</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">mail</span></div>
+          <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-all" id="reg-email" placeholder="tu@correo.com" type="email"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="font-label-md text-label-md text-on-surface">Contraseña</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">lock</span></div>
+          <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-10 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-all" id="reg-password" placeholder="Mínimo 4 caracteres" type="password"/>
+        </div>
+      </div>
+      <button onclick="doRegister()" type="button" class="w-full bg-secondary text-on-secondary hover:bg-secondary-fixed font-label-md text-label-md py-3.5 rounded-lg mt-2 flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(78,222,163,0.3)] font-semibold cursor-pointer">
+        <span>Crear Mi Cuenta</span>
+        <span class="material-symbols-outlined text-lg">how_to_reg</span>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4 py-1">
+      <div class="flex-1 h-px bg-outline-variant/30"></div>
+      <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">O continuar con</span>
+      <div class="flex-1 h-px bg-outline-variant/30"></div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3">
+      <button onclick="quickAuth('Google')" class="flex-1 flex items-center justify-center gap-2.5 bg-surface-container-high/60 border border-outline-variant/40 rounded-xl py-3 px-4 font-label-md text-label-md text-on-surface hover:bg-surface-variant/50 transition-all cursor-pointer" type="button">
+        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.2s.7 5.5 1.9 7.9l3.7-2.9z"/><path fill="#34A853" d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.9C3.7 20.6 7.5 23.5 12 23.5z"/></svg>
+        Google
+      </button>
+      <button onclick="quickAuth('Apple')" class="flex-1 flex items-center justify-center gap-2.5 bg-surface-container-high/60 border border-outline-variant/40 rounded-xl py-3 px-4 font-label-md text-label-md text-on-surface hover:bg-surface-variant/50 transition-all cursor-pointer" type="button">
+        <svg class="w-5 h-5 fill-current text-on-surface" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.86c.65-.79 1.09-1.89.97-2.99-1 .04-2.15.65-2.82 1.44-.58.68-1.1 1.77-.96 2.85 1.12.09 2.16-.51 2.81-1.3z"/></svg>
+        Apple
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 2. DASHBOARD VIEW                          -->
+<!-- ========================================== -->
+<div id="dashboard-view" style="display: none;" class="min-h-screen w-full relative">
+  <nav class="hidden md:flex bg-surface-container-low text-primary fixed left-0 top-0 h-screen w-64 border-r border-outline-variant/10 flex-col p-6 gap-element-gap z-40">
+    <div class="mb-8">
+      <h1 class="font-headline-md text-headline-md font-black text-primary">Aura</h1>
+      <p class="font-label-sm text-label-sm text-on-surface-variant">Wealth Management</p>
+    </div>
+    <div class="flex flex-col gap-2">
+      <button type="button" class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-medium w-full text-left">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">home</span>
+        <span class="font-label-md text-label-md">Home</span>
+      </button>
+      <button type="button" onclick="logout()" class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/30 rounded-lg transition-all w-full text-left cursor-pointer">
+        <span class="material-symbols-outlined">logout</span>
+        <span class="font-label-md text-label-md">Cerrar Sesión</span>
+      </button>
+    </div>
+    <div class="mt-auto">
+      <button type="button" onclick="openModal()" class="w-full bg-primary hover:bg-primary-fixed text-on-primary font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 font-semibold transition-all shadow-md cursor-pointer">
+        <span class="material-symbols-outlined">add</span>
+        Nueva Transacción
+      </button>
+    </div>
+  </nav>
+
+  <header class="md:hidden bg-surface/70 backdrop-blur-md text-primary fixed top-0 w-full z-50 border-b border-outline-variant/20 flex justify-between items-center px-6 h-16">
+    <div class="font-headline-md text-headline-md font-bold text-primary">Aura Finance</div>
+    <div class="flex items-center gap-3">
+      <button type="button" onclick="openModal()" class="text-primary hover:opacity-80 transition-opacity cursor-pointer"><span class="material-symbols-outlined text-2xl">add_circle</span></button>
+      <button type="button" onclick="logout()" class="text-on-surface-variant hover:text-error transition-colors cursor-pointer" title="Cerrar Sesión"><span class="material-symbols-outlined">logout</span></button>
+    </div>
+  </header>
+
+  <main class="md:pl-64 pt-20 md:pt-8 pb-32 md:pb-8 max-w-max-width mx-auto px-container-padding">
+    <div class="flex flex-col gap-section-gap">
+      <div class="fade-in flex items-center justify-between">
+        <div>
+          <p class="font-label-md text-label-md text-on-surface-variant">Bienvenido de nuevo,</p>
+          <h2 class="font-headline-md text-headline-md text-on-surface font-semibold" id="dash-user-name">Usuario</h2>
+        </div>
+        <div class="hidden md:flex items-center gap-2 bg-surface-container rounded-full px-4 py-2 border border-outline-variant/20">
+          <span class="material-symbols-outlined text-on-surface-variant text-lg">calendar_today</span>
+          <span class="font-label-md text-label-md text-on-surface-variant" id="current-date"></span>
+        </div>
+      </div>
+
+      <section class="fade-in flex flex-col gap-element-gap">
+        <div>
+          <h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Balance Total</h2>
+          <div class="font-display-lg text-display-lg text-primary font-bold" id="total-balance">$0.00</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-element-gap mt-4">
+          <div class="bg-surface-container-high rounded-xl p-6 border border-secondary/20 relative overflow-hidden">
+            <div class="absolute inset-0 bg-secondary/5 pointer-events-none"></div>
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <div class="bg-secondary/20 p-2 rounded-lg text-secondary"><span class="material-symbols-outlined">arrow_upward</span></div>
+            </div>
+            <div class="relative z-10">
+              <p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Ingresos del Mes</p>
+              <p class="font-headline-lg text-headline-lg text-secondary font-bold" id="total-income">+$0.00</p>
+            </div>
+          </div>
+          <div class="bg-surface-container-high rounded-xl p-6 border border-error/20 relative overflow-hidden">
+            <div class="absolute inset-0 bg-error/5 pointer-events-none"></div>
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <div class="bg-error/20 p-2 rounded-lg text-error"><span class="material-symbols-outlined">arrow_downward</span></div>
+            </div>
+            <div class="relative z-10">
+              <p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Gastos del Mes</p>
+              <p class="font-headline-lg text-headline-lg text-error font-bold" id="total-expenses">-$0.00</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fade-in">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-headline-md text-headline-md text-on-surface font-semibold">Transacciones</h3>
+          <div class="flex gap-2">
+            <select id="filter-type" onchange="renderTransactions()" class="bg-surface-container border border-outline-variant/30 text-on-surface-variant font-label-sm text-label-sm rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
+              <option value="all">Todas</option>
+              <option value="gasto">Gastos</option>
+              <option value="ingreso">Ingresos</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2" id="transactions-list">
+          <p class="text-on-surface-variant text-center py-8 font-body-md text-body-md" id="empty-state">No hay transacciones aún. ¡Agrega una!</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <button type="button" onclick="openModal()" class="md:hidden fixed bottom-8 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40 cursor-pointer">
+    <span class="material-symbols-outlined text-2xl">add</span>
+  </button>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. MODAL: NUEVA TRANSACCIÓN                -->
+<!-- ========================================== -->
+<div id="modal-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+  <div class="w-full max-w-md bg-surface-container-low border border-outline-variant/20 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+    <div class="flex justify-between items-center p-6 border-b border-outline-variant/10">
+      <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">Nueva Transacción</h2>
+      <button type="button" onclick="closeModal()" class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant/20 cursor-pointer">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
+      <div class="flex bg-surface-container-high p-1 rounded-lg">
+        <button type="button" class="flex-1 py-2 px-4 rounded-md font-label-md text-label-md transition-all text-center active-tab cursor-pointer" id="btn-gasto" onclick="setType('gasto')">Gasto</button>
+        <button type="button" class="flex-1 py-2 px-4 rounded-md font-label-md text-label-md transition-all text-center inactive-tab cursor-pointer" id="btn-ingreso" onclick="setType('ingreso')">Ingreso</button>
+      </div>
+      <div class="flex flex-col items-center justify-center py-4">
+        <label class="text-on-surface-variant font-label-sm text-label-sm mb-2 uppercase tracking-wider">Monto</label>
+        <div class="flex items-center gap-2">
+          <span class="font-display-lg text-display-lg text-on-surface-variant font-bold">$</span>
+          <input id="tx-amount" class="bg-transparent border-none outline-none font-display-lg text-display-lg text-on-surface w-full max-w-[200px] text-center focus:ring-0 placeholder-on-surface-variant/30 font-bold" placeholder="0.00" type="number" min="0" step="0.01"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-on-surface-variant font-label-sm text-label-sm mb-2 block uppercase tracking-wider">Descripción</label>
+        <input id="tx-desc" class="w-full bg-surface-container-high border border-outline-variant/20 text-on-surface font-body-md text-body-md rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors placeholder-on-surface-variant/50" placeholder="Ej. Supermercado, Alquiler, Salario..." type="text"/>
+      </div>
+      <div>
+        <label class="text-on-surface-variant font-label-sm text-label-sm mb-3 block uppercase tracking-wider">Categoría</label>
+        <div class="grid grid-cols-4 gap-3" id="cat-grid"></div>
+      </div>
+      <div>
+        <label class="text-on-surface-variant font-label-sm text-label-sm mb-2 block uppercase tracking-wider">Fecha</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant">calendar_today</span></div>
+          <input id="tx-date" class="w-full bg-surface-container-high border border-outline-variant/20 text-on-surface font-body-md text-body-md rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-primary transition-colors" type="date"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-on-surface-variant font-label-sm text-label-sm mb-2 block uppercase tracking-wider">Notas (Opcional)</label>
+        <div class="relative">
+          <div class="absolute top-3 left-0 pl-3 pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant">notes</span></div>
+          <textarea id="tx-notes" class="w-full bg-surface-container-high border border-outline-variant/20 text-on-surface font-body-md text-body-md rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-primary transition-colors resize-none placeholder-on-surface-variant/50" placeholder="Añade un detalle..." rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-outline-variant/10 bg-surface-container-low">
+      <button type="button" onclick="saveTransaction()" class="w-full bg-primary hover:bg-primary-fixed text-on-primary font-label-md text-label-md py-3.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 cursor-pointer">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">check_circle</span>
+        Guardar Transacción
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEMO_USER = { email: 'demo@aura.com', password: 'demo1234', name: 'Usuario Demo' };
+let currentType = 'gasto';
+let selectedCat = null;
+
+const CATS = [
+  {id:'comida',label:'Comida',icon:'restaurant',type:'gasto'},
+  {id:'transporte',label:'Transporte',icon:'directions_car',type:'gasto'},
+  {id:'ocio',label:'Ocio',icon:'movie',type:'gasto'},
+  {id:'compras',label:'Compras',icon:'shopping_bag',type:'gasto'},
+  {id:'salud',label:'Salud',icon:'local_hospital',type:'gasto'},
+  {id:'hogar',label:'Hogar',icon:'home',type:'gasto'},
+  {id:'salario',label:'Salario',icon:'work',type:'ingreso'},
+  {id:'freelance',label:'Freelance',icon:'computer',type:'ingreso'},
+  {id:'inversion',label:'Inversión',icon:'trending_up',type:'ingreso'},
+  {id:'otro',label:'Otro',icon:'more_horiz',type:'both'}
+];
+
+const CAT_COLORS = {
+  comida:'#4edea3',transporte:'#cbc3d7',ocio:'#ffb2b9',compras:'#d0bcff',
+  salud:'#ffb4ab',hogar:'#4edea3',salario:'#4edea3',freelance:'#d0bcff',
+  inversion:'#4edea3',otro:'#cbc3d7'
+};
+
+let transactions = [];
+try {
+  transactions = JSON.parse(localStorage.getItem('aura_transactions') || '[]');
+} catch(e) {
+  transactions = [];
+}
+
+// VIEW SWITCHING (INSTANT & RESILIENT)
+function showDashboard(user) {
+  const authEl = document.getElementById('auth-view');
+  const dashEl = document.getElementById('dashboard-view');
+  if (authEl) authEl.style.display = 'none';
+  if (dashEl) dashEl.style.display = 'block';
+
+  const userEl = document.getElementById('dash-user-name');
+  if (userEl) userEl.textContent = (user && user.name) ? user.name : 'Usuario';
+
+  const now = new Date();
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) dateEl.textContent = now.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+  const txDate = document.getElementById('tx-date');
+  if (txDate) txDate.valueAsDate = now;
+
+  renderCatGrid();
+  renderDashboard();
+}
+
+function showAuth() {
+  const authEl = document.getElementById('auth-view');
+  const dashEl = document.getElementById('dashboard-view');
+  if (dashEl) dashEl.style.display = 'none';
+  if (authEl) authEl.style.display = 'flex';
+}
+
+function logout() {
+  try {
+    sessionStorage.removeItem('aura_user');
+    localStorage.removeItem('aura_active_user');
+  } catch(e) {}
+  showAuth();
+}
+
+function setAuthMode(mode) {
+  const loginForm = document.getElementById('login-form');
+  const regForm = document.getElementById('register-form');
+  const tabLogin = document.getElementById('tab-login');
+  const tabReg = document.getElementById('tab-register');
+  const cardTitle = document.getElementById('card-title');
+  const cardDesc = document.getElementById('card-desc');
+
+  if (mode === 'login') {
+    if (loginForm) loginForm.classList.remove('hidden');
+    if (regForm) regForm.classList.add('hidden');
+    if (tabLogin) tabLogin.className = 'flex-1 py-2 rounded-lg font-label-md text-label-md transition-all text-center bg-surface-variant text-on-surface shadow-sm cursor-pointer';
+    if (tabReg) tabReg.className = 'flex-1 py-2 rounded-lg font-label-md text-label-md transition-all text-center text-on-surface-variant hover:text-on-surface cursor-pointer';
+    if (cardTitle) cardTitle.textContent = 'Iniciar Sesión';
+    if (cardDesc) cardDesc.textContent = 'Gestiona tus finanzas y gastos con total precisión.';
+  } else {
+    if (loginForm) loginForm.classList.add('hidden');
+    if (regForm) regForm.classList.remove('hidden');
+    if (tabReg) tabReg.className = 'flex-1 py-2 rounded-lg font-label-md text-label-md transition-all text-center bg-secondary-container text-on-secondary-container shadow-sm cursor-pointer';
+    if (tabLogin) tabLogin.className = 'flex-1 py-2 rounded-lg font-label-md text-label-md transition-all text-center text-on-surface-variant hover:text-on-surface cursor-pointer';
+    if (cardTitle) cardTitle.textContent = 'Crear Cuenta';
+    if (cardDesc) cardDesc.textContent = 'Crea tu cuenta personal para llevar el control de tus finanzas.';
+  }
+}
+
+function doLogin() {
+  const emailInput = document.getElementById('login-email');
+  const email = (emailInput ? emailInput.value : 'demo@aura.com').trim();
+  const inferredName = email.includes('@') ? email.split('@')[0] : 'Usuario';
+  const capName = inferredName.charAt(0).toUpperCase() + inferredName.slice(1);
+  const user = { name: (email === DEMO_USER.email ? 'Usuario Demo' : capName), email };
+  
+  try {
+    sessionStorage.setItem('aura_user', JSON.stringify(user));
+    localStorage.setItem('aura_active_user', JSON.stringify(user));
+  } catch(e) {}
+  
+  showDashboard(user);
+}
+
+function doRegister() {
+  const nameInput = document.getElementById('reg-name');
+  const emailInput = document.getElementById('reg-email');
+  const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Nuevo Usuario';
+  const email = (emailInput && emailInput.value.trim()) ? emailInput.value.trim() : 'usuario@aura.com';
+  const user = { name, email };
+  
+  try {
+    sessionStorage.setItem('aura_user', JSON.stringify(user));
+    localStorage.setItem('aura_active_user', JSON.stringify(user));
+  } catch(e) {}
+  
+  showDashboard(user);
+}
+
+function quickAuth(provider) {
+  const user = { name: 'Usuario ' + provider, email: 'usuario@' + provider.toLowerCase() + '.com' };
+  try {
+    sessionStorage.setItem('aura_user', JSON.stringify(user));
+    localStorage.setItem('aura_active_user', JSON.stringify(user));
+  } catch(e) {}
+  showDashboard(user);
+}
+
+// DASHBOARD RENDERING
+function fmt(n) {
+  return '$' + Math.abs(n).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function renderDashboard() {
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  const monthTx = transactions.filter(t => {
+    const d = new Date(t.date + 'T12:00:00');
+    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+  });
+
+  const income = monthTx.filter(t => t.type === 'ingreso').reduce((s, t) => s + t.amount, 0);
+  const expenses = monthTx.filter(t => t.type === 'gasto').reduce((s, t) => s + t.amount, 0);
+  const balance = income - expenses;
+
+  const balEl = document.getElementById('total-balance');
+  if (balEl) {
+    balEl.textContent = (balance >= 0 ? '+' : '-') + fmt(balance);
+    balEl.className = 'font-display-lg text-display-lg font-bold ' + (balance >= 0 ? 'text-primary' : 'text-error');
+  }
+
+  const inEl = document.getElementById('total-income');
+  if (inEl) inEl.textContent = '+' + fmt(income);
+  const exEl = document.getElementById('total-expenses');
+  if (exEl) exEl.textContent = '-' + fmt(expenses);
+
+  renderTransactions();
+}
+
+function renderTransactions() {
+  const list = document.getElementById('transactions-list');
+  if (!list) return;
+  const filterEl = document.getElementById('filter-type');
+  const filter = filterEl ? filterEl.value : 'all';
+  const filtered = (filter === 'all' ? transactions : transactions.filter(t => t.type === filter));
+
+  if (!filtered.length) {
+    list.innerHTML = '<p class="text-on-surface-variant text-center py-8 font-body-md text-body-md">' +
+      (transactions.length ? 'No hay ' + filter + 's registrados.' : 'No hay transacciones aún. ¡Agrega una!') + '</p>';
+    return;
+  }
+
+  const sorted = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+  list.innerHTML = '';
+
+  sorted.forEach((tx, i) => {
+    const isIncome = tx.type === 'ingreso';
+    const catInfo = CATS.find(c => c.id === tx.category) || { icon: 'more_horiz', label: 'Otro' };
+    const color = CAT_COLORS[tx.category] || '#cbc3d7';
+    const d = new Date(tx.date + 'T12:00:00');
+    const dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+
+    const div = document.createElement('div');
+    div.className = 'tx-row flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high transition-colors rounded-xl cursor-pointer tx-item';
+    div.innerHTML = `
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background:${color}20;color:${color}">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">${catInfo.icon}</span>
+        </div>
+        <div>
+          <p class="font-body-md text-body-md text-on-surface font-medium">${tx.description || catInfo.label}</p>
+          <p class="font-label-sm text-label-sm text-on-surface-variant">${catInfo.label} • ${dateStr}</p>
+          ${tx.notes ? `<p class="font-label-sm text-label-sm text-on-surface-variant/60 mt-0.5">${tx.notes}</p>` : ''}
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="font-body-md text-body-md font-semibold ${isIncome ? 'text-secondary' : 'text-on-surface'}">${isIncome ? '+' : '-'}${fmt(tx.amount)}</span>
+        <button type="button" class="delete-btn text-error/60 hover:text-error transition-colors p-1" onclick="deleteTransaction('${tx.id}')" title="Eliminar">
+          <span class="material-symbols-outlined text-lg">delete</span>
+        </button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function openModal() {
+  const modal = document.getElementById('modal-overlay');
+  if (modal) modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  renderCatGrid();
+}
+
+function closeModal() {
+  const modal = document.getElementById('modal-overlay');
+  if (modal) modal.classList.add('hidden');
+  document.body.style.overflow = '';
+  const am = document.getElementById('tx-amount'); if (am) am.value = '';
+  const desc = document.getElementById('tx-desc'); if (desc) desc.value = '';
+  const notes = document.getElementById('tx-notes'); if (notes) notes.value = '';
+  const dateEl = document.getElementById('tx-date'); if (dateEl) dateEl.valueAsDate = new Date();
+  selectedCat = null;
+  renderCatGrid();
+}
+
+const modalOverlay = document.getElementById('modal-overlay');
+if (modalOverlay) {
+  modalOverlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+}
+
+function setType(type) {
+  currentType = type;
+  const bg = document.getElementById('btn-gasto');
+  const bi = document.getElementById('btn-ingreso');
+  if (bg) bg.className = 'flex-1 py-2 px-4 rounded-md font-label-md text-label-md transition-all text-center cursor-pointer ' + (type === 'gasto' ? 'active-tab' : 'inactive-tab');
+  if (bi) bi.className = 'flex-1 py-2 px-4 rounded-md font-label-md text-label-md transition-all text-center cursor-pointer ' + (type === 'ingreso' ? 'active-tab' : 'inactive-tab');
+  selectedCat = null;
+  renderCatGrid();
+}
+
+function renderCatGrid() {
+  const grid = document.getElementById('cat-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  CATS.filter(c => c.type === currentType || c.type === 'both').forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cat-btn' + (selectedCat === c.id ? ' selected' : '');
+    btn.onclick = () => { selectedCat = c.id; renderCatGrid(); };
+    const color = CAT_COLORS[c.id] || '#cbc3d7';
+    btn.innerHTML = `<div class="cat-icon"><span class="material-symbols-outlined" style="color:${color};font-variation-settings:'FILL' 1;">${c.icon}</span></div><span style="font-size:11px;line-height:14px;text-align:center;">${c.label}</span>`;
+    grid.appendChild(btn);
+  });
+}
+
+function saveTransaction() {
+  const amountEl = document.getElementById('tx-amount');
+  const descEl = document.getElementById('tx-desc');
+  const dateEl = document.getElementById('tx-date');
+  const notesEl = document.getElementById('tx-notes');
+
+  const amount = amountEl ? parseFloat(amountEl.value) : 0;
+  const desc = descEl ? descEl.value.trim() : '';
+  const date = dateEl ? dateEl.value : '';
+  const notes = notesEl ? notesEl.value.trim() : '';
+
+  if (!amount || amount <= 0) { alert('Ingresa un monto válido.'); return; }
+  if (!selectedCat) { alert('Selecciona una categoría.'); return; }
+  if (!date) { alert('Selecciona una fecha.'); return; }
+
+  const tx = { id: Date.now().toString(), type: currentType, amount, description: desc, category: selectedCat, date, notes };
+  transactions.unshift(tx);
+  try {
+    localStorage.setItem('aura_transactions', JSON.stringify(transactions));
+  } catch(e) {}
+  closeModal();
+  renderDashboard();
+}
+
+function deleteTransaction(id) {
+  if (!confirm('¿Eliminar esta transacción?')) return;
+  transactions = transactions.filter(t => t.id !== id);
+  try {
+    localStorage.setItem('aura_transactions', JSON.stringify(transactions));
+  } catch(e) {}
+  renderDashboard();
+}
+
+// AUTO RESTORE SESSION
+try {
+  const savedUser = JSON.parse(sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user') || 'null');
+  if (savedUser && savedUser.name) {
+    showDashboard(savedUser);
+  }
+} catch(e) {}
+</script>
+</body>
+</html>
