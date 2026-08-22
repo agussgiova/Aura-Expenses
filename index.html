@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Finance - Iniciar Sesión</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config={darkMode:"class",theme:{extend:{colors:{"error-container":"#93000a","error":"#ffb4ab","inverse-primary":"#6d3bd7","on-primary":"#3c0091","surface-variant":"#353534","on-tertiary-fixed-variant":"#891933","on-tertiary":"#67001f","tertiary":"#ffb2b9","secondary":"#4edea3","on-background":"#e5e2e1","surface":"#131313","secondary-fixed-dim":"#4edea3","surface-container-highest":"#353534","primary-container":"#a078ff","on-surface":"#e5e2e1","on-secondary-fixed":"#002113","primary-fixed":"#e9ddff","outline-variant":"#494454","surface-container-lowest":"#0e0e0e","on-primary-fixed-variant":"#5516be","inverse-surface":"#e5e2e1","tertiary-fixed-dim":"#ffb2b9","primary-fixed-dim":"#d0bcff","surface-bright":"#3a3939","surface-tint":"#d0bcff","on-surface-variant":"#cbc3d7","background":"#131313","on-tertiary-fixed":"#400010","tertiary-container":"#ea6479","on-error":"#690005","primary":"#d0bcff","on-secondary":"#003824","secondary-container":"#00a572","secondary-fixed":"#6ffbbe","surface-container-low":"#1c1b1b","on-primary-fixed":"#23005c","on-primary-container":"#340080","on-error-container":"#ffdad6","surface-container":"#201f1f","on-secondary-fixed-variant":"#005236","tertiary-fixed":"#ffdadc","outline":"#958ea0","inverse-on-surface":"#313030","on-secondary-container":"#00311f","surface-dim":"#131313","surface-container-high":"#2a2a2a","on-tertiary-container":"#5b001a"},borderRadius:{"DEFAULT":"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-padding":"24px","element-gap":"16px",unit:"4px","max-width":"1200px","section-gap":"40px"},fontFamily:{"label-sm":["Inter"],"headline-md":["Inter"],"headline-lg":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"display-lg":["Inter"],"label-md":["Inter"],"headline-lg-mobile":["Inter"]},fontSize:{"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.05em",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"600"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"display-lg":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],"label-md":["14px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"500"}],"headline-lg-mobile":["24px",{lineHeight:"32px",fontWeight:"600"}]}}}}
+</script>
+<style>
+  input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{-webkit-box-shadow:0 0 0 30px #1c1b1b inset !important;-webkit-text-fill-color:#e5e2e1 !important;transition:background-color 5000s ease-in-out 0s;}
+  .shake{animation:shake 0.4s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .fade-in{animation:fadeIn 0.5s ease forwards;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden font-body-md">
+<div class="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-container/20 blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[-15%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary-container/10 blur-[100px] pointer-events-none"></div>
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image:radial-gradient(#e5e2e1 1px,transparent 1px);background-size:32px 32px;"></div>
+<main class="fade-in z-10 w-full max-w-[420px] mx-auto px-6 py-10 sm:p-10 bg-surface-container/60 backdrop-blur-2xl border border-outline-variant/30 sm:rounded-[24px] shadow-2xl flex flex-col gap-8 relative">
+  <header class="flex flex-col items-center text-center gap-3">
+    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-2 border border-primary/20">
+      <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings:'FILL' 1;">eco</span>
+    </div>
+    <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Iniciar Sesión</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant">Ingresa a tu cuenta para gestionar tus finanzas con precisión.</p>
+  </header>
+  <div id="error-banner" class="hidden bg-error-container/60 border border-error/30 text-error rounded-lg px-4 py-3 text-sm flex items-center gap-2">
+    <span class="material-symbols-outlined text-lg">error</span>
+    <span id="error-msg">Credenciales incorrectas.</span>
+  </div>
+  <form id="login-form" class="flex flex-col gap-5" novalidate>
+    <div class="flex flex-col gap-2">
+      <label class="font-label-md text-label-md text-on-surface" for="email">Correo Electrónico</label>
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">mail</span></div>
+        <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-4 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200" id="email" name="email" placeholder="tu@correo.com" type="email" autocomplete="email"/>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center">
+        <label class="font-label-md text-label-md text-on-surface" for="password">Contraseña</label>
+        <a class="font-label-sm text-label-sm text-primary hover:text-primary-fixed transition-colors" href="#">¿Olvidaste tu contraseña?</a>
+      </div>
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-xl">lock</span></div>
+        <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-3 pl-10 pr-10 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200" id="password" name="password" placeholder="••••••••" type="password" autocomplete="current-password"/>
+        <button class="absolute inset-y-0 right-0 pr-3 flex items-center text-on-surface-variant hover:text-on-surface transition-colors" type="button" id="toggle-password">
+          <span class="material-symbols-outlined text-xl" id="eye-icon">visibility</span>
+        </button>
+      </div>
+    </div>
+    <button class="w-full bg-primary hover:bg-primary-fixed text-on-primary font-label-md text-label-md py-3.5 rounded-lg mt-2 flex items-center justify-center gap-2 transition-colors duration-200 shadow-[0_0_15px_rgba(208,188,255,0.3)] hover:shadow-[0_0_20px_rgba(208,188,255,0.5)]" type="submit" id="submit-btn">
+      <span id="btn-label">Iniciar Sesión</span>
+      <span class="material-symbols-outlined text-lg" id="btn-icon">arrow_forward</span>
+    </button>
+  </form>
+  <div class="flex items-center gap-4 py-2">
+    <div class="flex-1 h-px bg-outline-variant/30"></div>
+    <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">O continuar con</span>
+    <div class="flex-1 h-px bg-outline-variant/30"></div>
+  </div>
+  <div class="flex flex-col sm:flex-row gap-3">
+    <button onclick="socialLogin('Google')" class="flex-1 flex items-center justify-center gap-2 bg-transparent border border-outline-variant rounded-lg py-3 px-4 font-label-md text-label-md text-on-surface hover:bg-surface-variant/40 hover:border-outline transition-all duration-200" type="button">
+      <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1;">language</span>Google
+    </button>
+    <button onclick="socialLogin('Apple')" class="flex-1 flex items-center justify-center gap-2 bg-transparent border border-outline-variant rounded-lg py-3 px-4 font-label-md text-label-md text-on-surface hover:bg-surface-variant/40 hover:border-outline transition-all duration-200" type="button">
+      <span class="material-symbols-outlined text-xl">phone_iphone</span>Apple
+    </button>
+  </div>
+  <div class="text-center mt-2">
+    <p class="font-body-md text-body-md text-on-surface-variant">
+      ¿No tienes una cuenta?
+      <a class="font-label-md text-label-md text-primary hover:text-primary-fixed transition-colors ml-1" href="#" id="register-link">Regístrate ahora</a>
+    </p>
+    <p class="font-label-sm text-label-sm text-on-surface-variant/50 mt-3">Demo: demo@aura.com / demo1234</p>
+  </div>
+</main>
+<p class="z-10 mt-6 font-label-sm text-label-sm text-on-surface-variant/40">Aura Finance © 2024</p>
+<script>
+  const DEMO_USER={email:'demo@aura.com',password:'demo1234',name:'Usuario Demo'};
+  document.getElementById('toggle-password').addEventListener('click',function(){
+    const i=document.getElementById('password'),ic=document.getElementById('eye-icon');
+    if(i.type==='password'){i.type='text';ic.textContent='visibility_off';}
+    else{i.type='password';ic.textContent='visibility';}
+  });
+  document.getElementById('login-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const btn=document.getElementById('submit-btn');
+    const banner=document.getElementById('error-banner');
+    btn.disabled=true;
+    document.getElementById('btn-label').textContent='Verificando...';
+    document.getElementById('btn-icon').textContent='hourglass_empty';
+    banner.classList.add('hidden');
+    setTimeout(()=>{
+      if(email===DEMO_USER.email&&password===DEMO_USER.password){
+        sessionStorage.setItem('aura_user',JSON.stringify({name:DEMO_USER.name,email:DEMO_USER.email}));
+        document.getElementById('btn-label').textContent='¡Bienvenido!';
+        document.getElementById('btn-icon').textContent='check_circle';
+        setTimeout(()=>{window.location.href='dashboard.html';},600);
+      } else {
+        btn.disabled=false;
+        document.getElementById('btn-label').textContent='Iniciar Sesión';
+        document.getElementById('btn-icon').textContent='arrow_forward';
+        banner.classList.remove('hidden');
+        document.getElementById('error-msg').textContent='Credenciales incorrectas. Usa demo@aura.com / demo1234';
+        document.getElementById('login-form').classList.add('shake');
+        setTimeout(()=>document.getElementById('login-form').classList.remove('shake'),400);
+      }
+    },800);
+  });
+  function socialLogin(p){
+    sessionStorage.setItem('aura_user',JSON.stringify({name:'Usuario '+p,email:'user@'+p.toLowerCase()+'.com'}));
+    window.location.href='dashboard.html';
+  }
+  document.getElementById('register-link').addEventListener('click',function(e){
+    e.preventDefault();
+    alert('Registro próximamente.\nUsa: demo@aura.com / demo1234');
+  });
+  if(sessionStorage.getItem('aura_user'))window.location.href='dashboard.html';
+</script>
+</body>
+</html>
