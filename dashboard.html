@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8">
@@ -222,12 +222,22 @@ let currentType='gasto';
 let selectedCat=null;
 let transactions=JSON.parse(localStorage.getItem('aura_transactions')||'[]');
 
-// Auth guard - checks sessionStorage first, then fallback to localStorage
-const user = JSON.parse(sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user') || 'null');
-if(!user){
+// Safe Auth guard - prevents infinite redirect loop
+let user = null;
+try {
+  const raw = sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user');
+  if (raw) user = JSON.parse(raw);
+} catch (e) {
+  user = null;
+}
+
+if (!user || typeof user !== 'object' || !user.name) {
+  sessionStorage.removeItem('aura_user');
+  localStorage.removeItem('aura_active_user');
   window.location.replace('index.html');
 } else {
-  document.getElementById('user-name').textContent = user.name || 'Usuario';
+  const nameEl = document.getElementById('user-name');
+  if (nameEl) nameEl.textContent = user.name;
 }
 
 // Date
