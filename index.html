@@ -34,7 +34,7 @@
     <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-1 border border-primary/20">
       <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings:'FILL' 1;">eco</span>
     </div>
-    <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface" id="card-title">Iniciar Sesión</h1>
+    <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-bold" id="card-title">Iniciar Sesión</h1>
     <p class="font-body-md text-body-md text-on-surface-variant" id="card-desc">Gestiona tus finanzas y gastos con total precisión.</p>
   </header>
 
@@ -167,7 +167,7 @@
   <!-- Demo Notice / Toggle -->
   <div class="text-center pt-2 border-t border-outline-variant/10">
     <p class="font-label-sm text-label-sm text-on-surface-variant/60">
-      Cuenta de demostración: <span class="text-primary font-medium">demo@aura.com</span> / <span class="text-primary font-medium">demo1234</span>
+      Cuenta demo: <span class="text-primary font-medium">demo@aura.com</span> / <span class="text-primary font-medium">demo1234</span>
     </p>
   </div>
 </main>
@@ -178,7 +178,7 @@
     <div class="flex justify-between items-center border-b border-outline-variant/10 pb-3">
       <div class="flex items-center gap-2.5">
         <span id="modal-provider-icon" class="text-2xl"></span>
-        <h3 class="font-headline-md text-headline-md text-on-surface" id="social-modal-title">Continuar con Google</h3>
+        <h3 class="font-headline-md text-headline-md text-on-surface font-semibold" id="social-modal-title">Continuar con Google</h3>
       </div>
       <button onclick="closeSocialModal()" class="text-on-surface-variant hover:text-on-surface p-1.5 rounded-full hover:bg-surface-variant/30">
         <span class="material-symbols-outlined">close</span>
@@ -213,7 +213,6 @@
   const DEMO_USER = { email: 'demo@aura.com', password: 'demo1234', name: 'Usuario Demo' };
   let currentProvider = '';
 
-  // Get registered users from localStorage
   function getUsers() {
     return JSON.parse(localStorage.getItem('aura_users') || '[]');
   }
@@ -224,7 +223,13 @@
     localStorage.setItem('aura_users', JSON.stringify(users));
   }
 
-  // Toggle Password
+  function setSessionAndGo(userData) {
+    const serialized = JSON.stringify(userData);
+    sessionStorage.setItem('aura_user', serialized);
+    localStorage.setItem('aura_active_user', serialized);
+    window.location.replace('dashboard.html');
+  }
+
   function togglePass(inputId, btn) {
     const input = document.getElementById(inputId);
     const icon = btn.querySelector('.material-symbols-outlined');
@@ -237,7 +242,6 @@
     }
   }
 
-  // Switch Auth Mode (Login vs Register)
   function setAuthMode(mode) {
     const loginForm = document.getElementById('login-form');
     const regForm = document.getElementById('register-form');
@@ -264,7 +268,6 @@
     }
   }
 
-  // Alert helpers
   function showAlert(msg, isSuccess = false) {
     const banner = document.getElementById('alert-banner');
     const txt = document.getElementById('alert-msg');
@@ -281,7 +284,7 @@
     document.getElementById('alert-banner').classList.add('hidden');
   }
 
-  // Handle Login Submit
+  // Login Submit
   document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
     hideAlert();
@@ -296,35 +299,25 @@
       return;
     }
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">sync</span> Verificando...';
+    let matchedUser = null;
+    if (email === DEMO_USER.email && password === DEMO_USER.password) {
+      matchedUser = DEMO_USER;
+    } else {
+      const users = getUsers();
+      matchedUser = users.find(u => u.email === email && u.password === password);
+    }
 
-    setTimeout(() => {
-      // Check Demo user
-      let matchedUser = null;
-      if (email === DEMO_USER.email && password === DEMO_USER.password) {
-        matchedUser = DEMO_USER;
-      } else {
-        // Check registered users in localStorage
-        const users = getUsers();
-        matchedUser = users.find(u => u.email === email && u.password === password);
-      }
-
-      if (matchedUser) {
-        sessionStorage.setItem('aura_user', JSON.stringify({ name: matchedUser.name, email: matchedUser.email }));
-        showAlert(`¡Bienvenido de vuelta, ${matchedUser.name}!`, true);
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
-      } else {
-        btn.disabled = false;
-        btn.innerHTML = '<span>Ingresar</span><span class="material-symbols-outlined text-lg">arrow_forward</span>';
-        showAlert('Correo o contraseña incorrectos. Verifica tus datos.');
-        document.getElementById('login-form').classList.add('shake');
-        setTimeout(() => document.getElementById('login-form').classList.remove('shake'), 400);
-      }
-    }, 600);
+    if (matchedUser) {
+      showAlert(`¡Bienvenido, ${matchedUser.name}!`, true);
+      setSessionAndGo({ name: matchedUser.name, email: matchedUser.email });
+    } else {
+      showAlert('Correo o contraseña incorrectos. Verifica tus datos.');
+      document.getElementById('login-form').classList.add('shake');
+      setTimeout(() => document.getElementById('login-form').classList.remove('shake'), 400);
+    }
   });
 
-  // Handle Registration Submit (Manual Account Creation)
+  // Register Submit
   document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
     hideAlert();
@@ -332,42 +325,30 @@
     const email = document.getElementById('reg-email').value.trim().toLowerCase();
     const password = document.getElementById('reg-password').value;
     const passwordConfirm = document.getElementById('reg-password-confirm').value;
-    const btn = document.getElementById('reg-btn');
 
     if (!name || !email || !password) {
       showAlert('Por favor completa todos los campos requeridos.');
       return;
     }
-
     if (password.length < 4) {
       showAlert('La contraseña debe tener al menos 4 caracteres.');
       return;
     }
-
     if (password !== passwordConfirm) {
       showAlert('Las contraseñas no coinciden.');
       return;
     }
 
-    // Check if email already registered
     const users = getUsers();
     if (email === DEMO_USER.email || users.some(u => u.email === email)) {
       showAlert('Este correo ya está registrado. Inicia sesión directamente.');
       return;
     }
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">sync</span> Creando cuenta...';
-
-    setTimeout(() => {
-      const newUser = { name, email, password, createdAt: new Date().toISOString() };
-      saveUser(newUser);
-
-      // Auto login
-      sessionStorage.setItem('aura_user', JSON.stringify({ name: newUser.name, email: newUser.email }));
-      showAlert(`¡Cuenta creada con éxito! Bienvenido, ${name}`, true);
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
-    }, 700);
+    const newUser = { name, email, password, createdAt: new Date().toISOString() };
+    saveUser(newUser);
+    showAlert(`¡Cuenta creada con éxito! Bienvenido, ${name}`, true);
+    setSessionAndGo({ name: newUser.name, email: newUser.email });
   });
 
   // Social Auth Modals (Google & Apple)
@@ -405,16 +386,13 @@
     const name = document.getElementById('social-input-name').value.trim() || `Usuario ${currentProvider}`;
     const email = document.getElementById('social-input-email').value.trim() || `user@${currentProvider.toLowerCase()}.com`;
 
-    // Save session
-    sessionStorage.setItem('aura_user', JSON.stringify({ name, email, provider: currentProvider }));
     closeSocialModal();
-    showAlert(`Autenticado con ${currentProvider}. Redirigiendo...`, true);
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
+    setSessionAndGo({ name, email, provider: currentProvider });
   }
 
-  // Auto redirect if already logged in
-  if (sessionStorage.getItem('aura_user')) {
-    window.location.href = 'dashboard.html';
+  // Check if session active
+  if (sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user')) {
+    window.location.replace('dashboard.html');
   }
 </script>
 </body>
