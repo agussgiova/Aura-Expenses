@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
@@ -390,10 +390,23 @@
     setSessionAndGo({ name, email, provider: currentProvider });
   }
 
-  // Check if session active
-  if (sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user')) {
-    window.location.replace('dashboard.html');
+  function setSessionAndGo(userData) {
+    const serialized = JSON.stringify(userData);
+    try {
+      sessionStorage.setItem('aura_user', serialized);
+      localStorage.setItem('aura_active_user', serialized);
+    } catch(e) {}
+    window.location.href = 'dashboard.html';
   }
+
+  // Pre-fill email if user already registered
+  try {
+    const active = JSON.parse(localStorage.getItem('aura_active_user') || 'null');
+    if (active && active.email) {
+      const emailInput = document.getElementById('login-email');
+      if (emailInput && !emailInput.value) emailInput.value = active.email;
+    }
+  } catch(e) {}
 </script>
 </body>
 </html>
