@@ -222,7 +222,7 @@ let currentType='gasto';
 let selectedCat=null;
 let transactions=JSON.parse(localStorage.getItem('aura_transactions')||'[]');
 
-// Safe Auth guard - prevents infinite redirect loop
+// Safe Auth check with fallback
 let user = null;
 try {
   const raw = sessionStorage.getItem('aura_user') || localStorage.getItem('aura_active_user');
@@ -232,13 +232,11 @@ try {
 }
 
 if (!user || typeof user !== 'object' || !user.name) {
-  sessionStorage.removeItem('aura_user');
-  localStorage.removeItem('aura_active_user');
-  window.location.replace('index.html');
-} else {
-  const nameEl = document.getElementById('user-name');
-  if (nameEl) nameEl.textContent = user.name;
+  user = { name: 'Usuario Demo', email: 'demo@aura.com' };
 }
+
+const nameEl = document.getElementById('user-name');
+if (nameEl) nameEl.textContent = user.name;
 
 // Date
 const now=new Date();
